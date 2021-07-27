@@ -37,3 +37,4 @@ Release/
 .project
 
 *.json
+build/*
