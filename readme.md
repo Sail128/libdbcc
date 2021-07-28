@@ -1,7 +1,11 @@
 # dbcc
+
+This is a restructure of a project to make it easier to use it as a library rather than just a utility for conversion.
+
 ## DBC converter/compiler 
 
 This program turns a [DBC][] file into a number of different formats.
+
 
 ## Introduction
 
