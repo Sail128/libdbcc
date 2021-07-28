@@ -1,5 +1,5 @@
-#include "parse.h"
-#include "util.h"
+#include "libdbcc/parse.h"
+#include "libdbcc/util.h"
 #include <assert.h>
 
 static mpc_ast_t *_parse_dbc_string(const char *file_name, const char *string);

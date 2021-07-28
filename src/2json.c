@@ -3,8 +3,8 @@
  * @copyright Richard James Howe (2018)
  * @license MIT *
  */
-#include "2json.h"
-#include "util.h"
+#include "libdbcc/2json.h"
+#include "libdbcc/util.h"
 #include <assert.h>
 #include <time.h>
 
@@ -98,7 +98,7 @@ static int signal2json(signal_t *sig, FILE *o, unsigned depth, int multiplexed, 
 	return 0;
 }
 
-static int msg2json(can_msg_t *msg, FILE *o, unsigned depth)
+static int msg2json(dbc_can_msg_t *msg, FILE *o, unsigned depth)
 {
 	assert(msg);
 	assert(o);

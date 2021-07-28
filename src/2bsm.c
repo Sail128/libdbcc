@@ -2,8 +2,8 @@
  * into an equivalent XML file.
  * @copyright Richard James Howe (2018)
  * @license MIT **/
-#include "2bsm.h"
-#include "util.h"
+#include "libdbcc/2bsm.h"
+#include "libdbcc/util.h"
 #include <assert.h>
 #include <time.h>
 
@@ -121,7 +121,7 @@ static int signal2bsm(signal_t * sig, FILE * o, unsigned depth)
 	return 0;
 }
 
-static int msg2bsm(can_msg_t * msg, FILE * o, unsigned depth)
+static int msg2bsm(dbc_can_msg_t * msg, FILE * o, unsigned depth)
 {
 	assert(msg);
 	assert(o);

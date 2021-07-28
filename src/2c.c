@@ -10,8 +10,8 @@
  * code. The entire program really should be written in a language like Perl or
  * Python, but I wanted to use the MPC library for something, so here we are. */
 
-#include "2c.h"
-#include "util.h"
+#include "libdbcc/2c.h"
+#include "libdbcc/util.h"
 #include <assert.h>
 #include <ctype.h>
 #include <inttypes.h>
@@ -454,7 +454,7 @@ static void make_name(char *newname, size_t maxlen, const char *name, unsigned i
 	snprintf(newname, maxlen-1, "can_0x%03x_%s", id, name);
 }
 
-static signal_t *find_multiplexor(can_msg_t *msg) {
+static signal_t *find_multiplexor(dbc_can_msg_t *msg) {
 	assert(msg);
 	signal_t *multiplexor = NULL;
 	for (size_t i = 0; i < msg->signal_count; i++) {
@@ -470,7 +470,7 @@ static signal_t *find_multiplexor(can_msg_t *msg) {
 	return multiplexor;
 }
 
-static signal_t *process_signals_and_find_multiplexer(can_msg_t *msg, FILE *c, const char *name, bool serialize)
+static signal_t *process_signals_and_find_multiplexer(dbc_can_msg_t *msg, FILE *c, const char *name, bool serialize)
 {
 	assert(msg);
 	assert(c);
@@ -503,7 +503,7 @@ static int cmp_signal(const void *lhs, const void *rhs)
 		ret = 1;
 	return ret;
 }
-static int multiplexor_switch(can_msg_t *msg, signal_t *multiplexor, FILE *c, const char *msg_name, bool serialize)
+static int multiplexor_switch(dbc_can_msg_t *msg, signal_t *multiplexor, FILE *c, const char *msg_name, bool serialize)
 {
 	assert(msg);
 	assert(multiplexor);
@@ -530,7 +530,7 @@ static int multiplexor_switch(can_msg_t *msg, signal_t *multiplexor, FILE *c, co
 	return 0;
 }
 
-static int msg_data_type(FILE *c, can_msg_t *msg, bool data)
+static int msg_data_type(FILE *c, dbc_can_msg_t *msg, bool data)
 {
 	assert(c);
 	assert(msg);
@@ -540,7 +540,7 @@ static int msg_data_type(FILE *c, can_msg_t *msg, bool data)
 }
 
 
-static int msg_data_type_bitfields(FILE *c, can_msg_t *msg) {
+static int msg_data_type_bitfields(FILE *c, dbc_can_msg_t *msg) {
 	assert(c);
 	assert(msg);
 	char name[MAX_NAME_LENGTH] = {0};
@@ -550,7 +550,7 @@ static int msg_data_type_bitfields(FILE *c, can_msg_t *msg) {
 	return fprintf(c, "\tunsigned %s_rx : 1;\n", name); /* have we unpacked this message? */
 }
 
-static int msg_data_type_time_stamp(FILE *c, can_msg_t *msg) {
+static int msg_data_type_time_stamp(FILE *c, dbc_can_msg_t *msg) {
 	assert(c);
 	assert(msg);
 	char name[MAX_NAME_LENGTH] = {0};
@@ -558,7 +558,7 @@ static int msg_data_type_time_stamp(FILE *c, can_msg_t *msg) {
 	return fprintf(c, "\tdbcc_time_stamp_t %s_time_stamp_rx;\n", name);
 }
 
-static int msg_pack(can_msg_t *msg, FILE *c, const char *name, bool motorola_used, bool intel_used, const char *god, dbc2c_options_t *copts)
+static int msg_pack(dbc_can_msg_t *msg, FILE *c, const char *name, bool motorola_used, bool intel_used, const char *god, dbc2c_options_t *copts)
 {
 	assert(msg);
 	assert(c);
@@ -597,7 +597,7 @@ static int msg_pack(can_msg_t *msg, FILE *c, const char *name, bool motorola_use
 	return 0;
 }
 
-static int msg_unpack(can_msg_t *msg, FILE *c, const char *name, bool motorola_used, bool intel_used, const char *god, dbc2c_options_t *copts)
+static int msg_unpack(dbc_can_msg_t *msg, FILE *c, const char *name, bool motorola_used, bool intel_used, const char *god, dbc2c_options_t *copts)
 {
 	assert(msg);
 	assert(c);
@@ -632,7 +632,7 @@ static int msg_unpack(can_msg_t *msg, FILE *c, const char *name, bool motorola_u
 	return 0;
 }
 
-static int msg_print(can_msg_t *msg, FILE *c, const char *name, const char *god, dbc2c_options_t *copts)
+static int msg_print(dbc_can_msg_t *msg, FILE *c, const char *name, const char *god, dbc2c_options_t *copts)
 {
 	assert(msg);
 	assert(c);
@@ -661,7 +661,7 @@ static int msg_print(can_msg_t *msg, FILE *c, const char *name, const char *god,
 	return 0;
 }
 
-static int msg_dlc_check(can_msg_t *msg) {
+static int msg_dlc_check(dbc_can_msg_t *msg) {
 	assert(msg);
 	const unsigned bits = msg->dlc * 8;
 	unsigned used = 0;
@@ -678,7 +678,7 @@ static int msg_dlc_check(can_msg_t *msg) {
 	return 0;
 }
 
-static int msg2c(can_msg_t *msg, FILE *c, dbc2c_options_t *copts, char *god)
+static int msg2c(dbc_can_msg_t *msg, FILE *c, dbc2c_options_t *copts, char *god)
 {
 	assert(msg);
 	assert(c);
@@ -723,7 +723,7 @@ static int msg2c(can_msg_t *msg, FILE *c, dbc2c_options_t *copts, char *god)
 	return 0;
 }
 
-static int msg2h(can_msg_t *msg, FILE *h, dbc2c_options_t *copts, const char *god)
+static int msg2h(dbc_can_msg_t *msg, FILE *h, dbc2c_options_t *copts, const char *god)
 {
 	assert(msg);
 	assert(h);
@@ -760,8 +760,8 @@ static int message_compare_function(const void *a, const void *b)
 {
 	assert(a);
 	assert(b);
-	can_msg_t *ap = *((can_msg_t**)a);
-	can_msg_t *bp = *((can_msg_t**)b);
+	dbc_can_msg_t *ap = *((dbc_can_msg_t**)a);
+	dbc_can_msg_t *bp = *((dbc_can_msg_t**)b);
 	if (ap->id <  bp->id) return -1;
 	if (ap->id == bp->id) return  0;
 	if (ap->id >  bp->id) return  1;
@@ -803,7 +803,7 @@ static int switch_function(FILE *c, dbc_t *dbc, char *function, bool unpack,
 
 	fprintf(c, "\tswitch (id) {\n");
 	for (size_t i = 0; i < dbc->message_count; i++) {
-		can_msg_t *msg = dbc->messages[i];
+		dbc_can_msg_t *msg = dbc->messages[i];
 		char name[MAX_NAME_LENGTH] = {0};
 		make_name(name, MAX_NAME_LENGTH, msg->name, msg->id);
 		fprintf(c, "\tcase 0x%03lx: return %s_%s(o, data%s);\n",
@@ -834,7 +834,7 @@ static int switch_function_print(FILE *c, dbc_t *dbc, bool prototype, const char
 
 	fprintf(c, "\tswitch (id) {\n");
 	for (size_t i = 0; i < dbc->message_count; i++) {
-		can_msg_t *msg = dbc->messages[i];
+		dbc_can_msg_t *msg = dbc->messages[i];
 		char name[MAX_NAME_LENGTH] = {0};
 		make_name(name, MAX_NAME_LENGTH, msg->name, msg->id);
 		fprintf(c, "\tcase 0x%03lx: return print_%s(o, output);\n", msg->id, name);
@@ -849,7 +849,7 @@ static int msg2h_types(dbc_t *dbc, FILE *h)
 	assert(dbc);
 
 	for (size_t i = 0; i < dbc->message_count; i++) {
-		can_msg_t *msg = dbc->messages[i];
+		dbc_can_msg_t *msg = dbc->messages[i];
 		char name[MAX_NAME_LENGTH] = {0};
 		make_name(name, MAX_NAME_LENGTH, msg->name, msg->id);
 
@@ -916,7 +916,7 @@ int dbc2c(dbc_t *dbc, FILE *c, FILE *h, const char *name, dbc2c_options_t *copts
 
 	/* sort by size for better struct packing */
 	for (size_t i = 0; i < dbc->message_count; i++) {
-		can_msg_t *msg = dbc->messages[i];
+		dbc_can_msg_t *msg = dbc->messages[i];
 		qsort(msg->sigs, msg->signal_count, sizeof(msg->sigs[0]), signal_compare_function);
 	}
 

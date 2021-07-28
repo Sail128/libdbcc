@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include "can.h"
+#include "dbc.h"
 #include <stdbool.h>
 
 typedef struct {

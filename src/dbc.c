@@ -4,8 +4,8 @@
  * there is a bug in the grammar).
  * @note most values will be converted to doubles and then to integers, which
  * is fine for 32 bit values, but fails for large integers. */
-#include "can.h"
-#include "util.h"
+#include "libdbcc/dbc.h"
+#include "libdbcc/util.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <inttypes.h>
@@ -29,12 +29,12 @@ static void signal_delete(signal_t *signal)
 	free(signal);
 }
 
-static can_msg_t *can_msg_new(void)
+static dbc_can_msg_t *can_msg_new(void)
 {
-	return allocate(sizeof(can_msg_t));
+	return allocate(sizeof(dbc_can_msg_t));
 }
 
-static void can_msg_delete(can_msg_t *msg)
+static void can_msg_delete(dbc_can_msg_t *msg)
 {
 	if(!msg)
 		return;
@@ -222,11 +222,11 @@ static val_list_t *ast2val(mpc_ast_t *top, mpc_ast_t *ast)
 	return val;
 }
 
-static can_msg_t *ast2msg(mpc_ast_t *top, mpc_ast_t *ast, dbc_t *dbc)
+static dbc_can_msg_t *ast2msg(mpc_ast_t *top, mpc_ast_t *ast, dbc_t *dbc)
 {
 	assert(top);
 	assert(ast);
-	can_msg_t *c = can_msg_new();
+	dbc_can_msg_t *c = can_msg_new();
 	mpc_ast_t *name = mpc_ast_get_child(ast, "name|ident|regex");
 	mpc_ast_t *ecu  = mpc_ast_get_child(ast, "ecu|ident|regex");
 	mpc_ast_t *dlc  = mpc_ast_get_child(ast, "dlc|integer|regex");
@@ -360,7 +360,7 @@ dbc_t *ast2dbc(mpc_ast_t *ast)
 		return NULL;
 	}
 
-	can_msg_t **r = allocate(sizeof(*r) * (n+1));
+	dbc_can_msg_t **r = allocate(sizeof(*r) * (n+1));
 	int j = 0;
 	for(int i = 0; i >= 0;) {
 		i = mpc_ast_get_index_lb(msgs_ast, "message|>", i);

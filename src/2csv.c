@@ -5,11 +5,11 @@
  *
  * @bug No escape done on ',', '\t', or '\n'
  */
-#include "2csv.h"
-#include "util.h"
+#include "libdbcc/util.h"
+#include "libdbcc/2csv.h"
 #include <assert.h>
 
-static int msg2csv(can_msg_t *msg, FILE *o)
+static int msg2csv(dbc_can_msg_t *msg, FILE *o)
 {
 	assert(msg);
 	assert(o);

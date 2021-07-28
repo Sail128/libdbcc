@@ -65,12 +65,12 @@ typedef struct {
 	unsigned dlc;        /**< length of CAN message 0-8 bytes */
 	unsigned long id;    /**< identifier, 11 or 29 bit */
 	char *comment;
-} can_msg_t;
+} dbc_can_msg_t;
 
 typedef struct {
 	bool use_float;       /**< true if floating point conversion routines are needed */
 	size_t message_count; /**< count of messages */
-	can_msg_t **messages; /**< list of messages */
+	dbc_can_msg_t **messages; /**< list of messages */
 	size_t val_count;     /**< count of vals */
 	val_list_t **vals;    /**< value list; used for enumerations in DBC file */
 } dbc_t;

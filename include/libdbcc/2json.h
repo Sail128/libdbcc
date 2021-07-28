@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include "can.h"
+#include "dbc.h"
 
 int dbc2json(dbc_t *dbc, FILE *output, bool use_time_stamps);
 

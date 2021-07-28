@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include "can.h"
+#include "dbc.h"
 
 int dbc2csv(dbc_t *dbc, FILE *output);
 

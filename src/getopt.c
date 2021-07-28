@@ -1,7 +1,7 @@
 /* From: * <https://stackoverflow.com/questions/10404448/getopt-h-compiling-linux-c-code-in-windows> */
 #include <string.h>
 #include <stdio.h>
-#include "options.h"
+#include "libdbcc/options.h"
 
 int dbcc_opterr = 1, /**< if error message should be printed */
     dbcc_optind = 1, /**< index into parent argv vector */
