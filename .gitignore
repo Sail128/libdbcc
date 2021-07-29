@@ -1,4 +1,4 @@
-dbcc
+# dbcc
 *.dbc
 core
 vgcore.*
